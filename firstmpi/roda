@@ -1,0 +1,1 @@
+/usr/bin/time -f "%E" /opt/openmpi/bin/mpirun -v -np $1 -report-bindings --hostfile hostfile $2

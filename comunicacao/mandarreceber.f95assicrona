@@ -1,0 +1,36 @@
+program firstmpi
+        ! inclusão da bilbioteca MPI
+        use mpi
+        implicit none
+        integer:: mpierror,mpisize,mpirank
+        integer:: mpistatus(3),i
+        real:: valor
+
+        ! Inicialização da MPI
+        call MPI_Init(mpierror)
+        call MPI_Comm_size(MPI_COMM_WORLD,mpisize,mpierror)
+        call MPI_Comm_rank(MPI_COMM_WORLD,mpirank,mpierror)
+
+        ! processamento
+        valor = 0.0
+
+        if(mpirank==0)then
+            valor = 5.0
+        end if
+
+        if(mpirank==0)then
+            print*, valor
+            !             variavel,tamanho,tipo,destino,tag,grupo,erro
+            call MPI_Send(valor,1,MPI_REAL,1,9,MPI_COMM_WORLD,mpierror)
+            call MPI_Recv(valor,1,MPI_REAL,1,9,MPI_COMM_WORLD,mpistatus,mpierror)
+            print*,valor
+        else
+            call MPI_Recv(valor,1,MPI_REAL,0,9,MPI_COMM_WORLD,mpistatus,mpierror)
+            valor = 2.5*valor
+            call MPI_Send(valor,1,MPI_REAL,0,9,MPI_COMM_WORLD,mpierror)
+        end if
+
+
+        ! finalização da MPI
+        call MPI_Finalize (mpierror)
+end program firstmpi
