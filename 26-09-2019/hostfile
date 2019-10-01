@@ -1,0 +1,4 @@
+compute-1-10.local slots=8 max_slots=16
+compute-1-13.local slots=8 max_slots=16
+compute-1-14.local slots=8 max_slots=16
+compute-1-15.local slots=8 max_slots=16

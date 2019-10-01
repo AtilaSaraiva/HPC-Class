@@ -2,8 +2,8 @@ PROGRAM troca_paralelo
 
 
 ! o vetor a é igual a soma de dois valores do vetor b.
-	USE MPI	
-			
+	USE MPI
+
 		IMPLICIT NONE
 		INTEGER(kind=4) :: myid ! numero associado a cada processador, comecando do zero
 		INTEGER(kind=4) :: nprocs ! numero de processadores que serao utilizados
@@ -15,7 +15,7 @@ PROGRAM troca_paralelo
 		INTEGER :: i, isend3, isend4, irecv3, irecv4
 
 ! Initializing MPI
-				
+
 		CALL MPI_init(ierr)
 		CALL MPI_Comm_size(MPI_COMM_WORLD, nprocs, ierr)
 		CALL MPI_Comm_rank(MPI_COMM_WORLD, myid, ierr)
@@ -44,19 +44,19 @@ PROGRAM troca_paralelo
 			iend2= n-2
 		END IF
 
-		
+
 		inext = myid+1
 		iprev = myid-1
-		
-	
+
+
 		IF(myid.eq.(nprocs-1)) THEN
 			inext= MPI_PROC_NULL
-		END IF	
-	
+		END IF
+
 		IF(myid.eq.0) THEN
 			iprev= MPI_PROC_NULL
-		END IF	
-		
+		END IF
+
 
 
 		DO i=ista,iend
@@ -72,17 +72,17 @@ PROGRAM troca_paralelo
 
 
 		CALL MPI_IRECV(b(ista-1), 1, MPI_INTEGER, iprev, 1, MPI_COMM_WORLD, irecv1, ierr)
-		CALL MPI_IRECV(b(iend+1), 1, MPI_INTEGER, inext, 1, MPI_COMM_WORLD, irecv2, ierr)		
+		CALL MPI_IRECV(b(iend+1), 1, MPI_INTEGER, inext, 1, MPI_COMM_WORLD, irecv2, ierr)
 		CALL MPI_IRECV(b(ista-2), 1, MPI_INTEGER, iprev, 1, MPI_COMM_WORLD, irecv3, ierr)
 		CALL MPI_IRECV(b(iend+2), 1, MPI_INTEGER, inext, 1, MPI_COMM_WORLD, irecv4, ierr)
-		
 
 
 
 
 
-		
-		
+
+
+
 		CALL MPI_WAIT(isend1, status, ierr)
 		CALL MPI_WAIT(isend2, status, ierr)
 		CALL MPI_WAIT(isend3, status, ierr)
@@ -90,7 +90,7 @@ PROGRAM troca_paralelo
 		CALL MPI_WAIT(irecv1, status, ierr)
 		CALL MPI_WAIT(irecv2, status, ierr)
 		CALL MPI_WAIT(irecv3, status, ierr)
-		CALL MPI_WAIT(irecv4, status, ierr)		
+		CALL MPI_WAIT(irecv4, status, ierr)
 
 
 		DO i = ista2,iend2
@@ -101,28 +101,28 @@ PROGRAM troca_paralelo
 		IF (myid.eq.0) THEN
 			print*, a
 		END IF
-		
+
 		DEALLOCATE (a,b,a_aux)
 	CALL MPI_FINALIZE(ierr)
-	
+
 STOP
 END PROGRAM troca_paralelo
 
 
 
-! --------------------------------------------------------------------- ! 
+! --------------------------------------------------------------------- !
 
 
 SUBROUTINE PARA_RANGE_1(n1,n2,nprocs,myid,ista,iend)
 	INTEGER :: iwork1, iwork2, n1, n2, nprocs, myid, ista, iend
-	
+
 	iwork1=(n2-n1+1)/nprocs
 	iwork2=mod(n2-n1+1,nprocs)
 	ista=myid*iwork1+n1+min(myid,iwork2)
 	iend=ista+iwork1-1
 
 	if (iwork2.gt.myid) then
-	iend = iend + 1 
+	iend = iend + 1
 	end if
 END SUBROUTINE PARA_RANGE_1
 
